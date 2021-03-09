@@ -1,3 +1,16 @@
+
+import SwiftUI
+import MapKit
+import CoreLocation
+import Combine
+
+
+extension UIScreen {
+    static let getWidth = UIScreen.main.bounds.size.width
+    static let getHeight = UIScreen.main.bounds.size.height
+}
+
+
 struct MapView: View {
     //    - State to control sheet.
     @State private var showUserBusinessAdd = false
@@ -9,7 +22,8 @@ struct MapView: View {
     @State var locationManager = CLLocationManager()
         
     //    - State to control custom map location.
-//  @State var coordinateRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 178.30284, longitude: -72.29482), span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2))    
+    @Binding var coordinateRegion: MKCoordinateRegion
+    
     func search() {
         let searchRequest = MKLocalSearch.Request()
         searchRequest.naturalLanguageQuery = location
@@ -22,14 +36,14 @@ struct MapView: View {
                 return
             }
           print(response.mapItems.first?.placemark.title ?? "No Placemarks")
-            var coordinateRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: latitude, longitude: longitude), span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2))
+            let coordinateRegion = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: latitude, longitude: longitude), span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2))
             self.coordinateRegion = coordinateRegion
         }
     }
     
     var body: some View {
         ZStack {
-            Map(coordinateRegion: $coordinateRegion)
+            Map(coordinateRegion: self.$coordinateRegion)
                 .ignoresSafeArea(.all)
             VStack {
                 HStack {
